@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Detail Appointment - RumahSehat
+  </title>
+  <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+
+  <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+  <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+</head>
+<body>
+<nav th:replace="fragments/fragment :: navbar(page = 'Appointment')"></nav>
+
+<br>
+<center>
+  <h2 class="font-weight-bold" style="font-family: 'Poppins';font-size: 22px;">Detail Appointment</h2>
+    <div class="justify-content-center"></div>
+    <br>
+    <div class="d-flex justify-content-center">
+      <a class="px-4 m-1 btn text-info border border-info btn-sm" href="/">Beranda</a>
+      <a class="bg-info m-1 btn text-white btn-sm" href="/appointment/list">List Appointment</a>
+  </div>
+
+</center>
+
+
+
+<div class="container" style="width: 75%;">
+  <div class="card m-4 p-4">
+    <div class="card-body">
+        <p style="float: left; width: 50%; font-weight: bold; font-family: 'Verdana'; padding-right: 15px; color:#17a2b8; font-size: 14px;">Kode Appointment : </p>
+
+        <p style="float: left; width: 50%; font-family:'Gill Sans'; font-size: 19px; padding-right: 15px; padding-bottom: 8px;"th:text="${appointment.kode}"></p>
+
+        <p style="float: left; width: 50%; font-weight: bold; font-family: 'Verdana'; padding-right: 15px; color:#17a2b8; font-size: 14px;">Waktu Awal Appointment :  </p>
+
+        <p style="float: left; width: 50%; font-family:'Gill Sans'; font-size: 19px; padding-right: 15px; padding-bottom: 8px;"th:text="${#temporals.format(appointment.waktuAwal, 'dd-MM-yyyy HH:mm')}"></p>
+
+        <p style="float: left; width: 50%; font-weight: bold; font-family: 'Verdana'; padding-right: 15px; color:#17a2b8; font-size: 14px;">Status Appointment : </p>
+
+        <p style="float: left; width: 50%; font-family:'Gill Sans'; font-size: 19px; padding-right: 15px; padding-bottom: 8px;"th:if="${appointment.isDone}">Sudah Selesai</p>
+
+        <p style="float: left; width: 50%; font-family:'Gill Sans'; font-size: 19px; padding-right: 15px; padding-bottom: 8px;"th:unless="${appointment.isDone}">Belum Selesai</p>
+
+        <p style="float: left; width: 50%; font-weight: bold; font-family: 'Verdana'; padding-right: 15px; color:#17a2b8; font-size: 14px;">Nama Dokter : </p>
+
+        <p style="float: left; width: 50%; font-family:'Gill Sans'; font-size: 19px; padding-right: 15px; padding-bottom: 8px;"th:text="${appointment.dokter.nama}"></p>
+
+        <p style="float: left; width: 50%; font-weight: bold; font-family: 'Verdana'; padding-right: 15px; color:#17a2b8; font-size: 14px;">Nama Pasien: </p>
+        <br>
+
+        <p style="float: left; width: 50%; font-family:'Gill Sans'; font-size: 19px; padding-right: 15px; padding-bottom: 8px;"th:text="${appointment.pasien.nama}"></p>
+        <br>
+        <br>
+        <br>
+        <div class="justify-content-center" style="text-align: center">
+          
+          <a th:if="${appointment.resep} != null" th:href="@{/resep/view(id=${appointment.resep.id})}" class="px-4 m-1 btn text-info border border-info">Detail Resep</a>
+
+          <a sec:authorize="hasAuthority('Dokter')" th:if="${!appointment.isDone} and ${appointment.resep} == null" th:href="@{/resep/add(kode=${appointment.kode})}" class="bg-info m-1 btn text-white"> + Create Resep</a>
+         
+          <a sec:authorize="hasAuthority('Dokter')" th:if="${!appointment.isDone} and ${appointment.resep} == null" th:href="@{/appointment/update-status-appointment(kode=${appointment.kode})}" class="px-4 m-1 btn text-info border border-info" th:appointment-confirm-done="|Apakah Anda ingin menyelesaikan appointment tanpa resep?|" onclick="if (!confirm(this.getAttribute('appointment-confirm-done'))) return false">Selesai</a>
+
+          <a sec:authorize="hasAuthority('Dokter')" th:if="${!appointment.isDone} and ${appointment.resep} != null" th:href="@{/appointment/update-status-appointment(kode=${appointment.kode})}" class="px-4 m-1 btn text-info border border-info" th:appointment-confirm-done="|Apakah Anda ingin menyelesaikan appointment?|" onclick="if (!confirm(this.getAttribute('appointment-confirm-done'))) return false">Selesai</a>
+
+        </div>
+        </td>
+
+      </div>
+    </div>
+  </div>
+</div>
+<br><br>
+<footer th:replace="fragments/fragment :: footer(page = 'Detail Appointment')"></footer>
+</body>
+</html>
+

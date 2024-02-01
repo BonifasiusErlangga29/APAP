@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>RUMAH SEHAT</title>
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+
+    <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+    ></script>
+</head>
+<style>
+    .show {
+        display: block !important;
+    }
+</style>
+<body onload="initializeChart()">
+<nav th:replace="fragments/fragment :: navbar"></nav>
+
+<div class="container">
+    <h2 class="mt-4 py-4">Line Chart Tagihan</h2>
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <button
+                type="button"
+                id="line-button"
+                class="btn btn-primary"
+                onclick="changeToLine()"
+        >
+            Line Chart
+        </button>
+    </div>
+    <div class="form-line show" id="form-line" style="display: none">
+        <label for="periode-line">Pilih Periode:</label>
+        <select
+                name="periode-line"
+                id="periode-line"
+                onchange="checkPeriode()"
+        >
+            <option value="bulanan">Bulanan</option>
+            <option value="tahunan">Tahunan</option>
+        </select>
+        <div
+                class="form-group show"
+                id="form-bulanan"
+                style="display: none"
+        >
+            <label for="inputLineBulananBulan">Bulan</label>
+            <input
+                    type="number"
+                    class="form-control"
+                    id="inputLineBulananBulan"
+                    placeholder="Masukkan Bulan"
+                    onchange="setChartLineBulananBulan()"
+            />
+            <label for="inputLineBulananTahun">Tahun</label>
+            <input
+                    type="number"
+                    class="form-control"
+                    id="inputLineBulananTahun"
+                    placeholder="Masukkan Tahun"
+                    onchange="setChartLineBulananTahun()"
+            />
+        </div>
+        <div class="form-group" id="form-tahunan" style="display: none">
+            <label for="inputLineTahunan">Tahun</label>
+            <input
+                    type="number"
+                    class="form-control"
+                    id="inputLineTahunan"
+                    placeholder="Masukkan Tahun"
+                    onchange="setChartLineTahunan()"
+            />
+        </div>
+        <div class="chart-container pb-5 mb-5" style="width: 80%">
+            <canvas
+                    id="myChartLineBulanan"
+                    class="lineBulan show"
+                    style="display: none"
+            ></canvas>
+            <canvas
+                    id="myChartLineTahunan"
+                    class="lineTahun"
+                    style="display: none"
+            ></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    var valueBulananBulan = 0;
+    var valueBulananTahun = 0;
+    var myChartLineBulanan;
+
+    var valueTahunan = 0;
+    var myChartLineTahunan;
+
+    var url = "/api/chart/lineChartTagihan"; // default url
+
+    function changeToLine() {
+        document
+            .getElementById("line-button")
+            .classList.remove("btn-outline-primary");
+        document
+            .getElementById("line-button")
+            .classList.add("btn-primary");
+        document.getElementById("form-line").classList.add("show");
+        if (lineValue == "bulanan") {
+            setChartLineBulananBulan();
+        } else {
+            setChartLineTahunan();
+        }
+    }
+    function checkPeriode() {
+        if (
+            document.getElementById("periode-line").value == "tahunan"
+        ) {
+            document
+                .getElementById("form-tahunan")
+                .classList.add("show");
+            document
+                .getElementById("form-bulanan")
+                .classList.remove("show");
+            document
+                .getElementById("myChartLineBulanan")
+                .classList.remove("show");
+            document
+                .getElementById("myChartLineTahunan")
+                .classList.add("show");
+            lineValue = "tahunan";
+            url = "/api/chart/lineChartTagihan/" + valueTahunan;
+            setChartLineTahunan();
+        } else {
+            document
+                .getElementById("form-tahunan")
+                .classList.remove("show");
+            document
+                .getElementById("form-bulanan")
+                .classList.add("show");
+            document
+                .getElementById("myChartLineBulanan")
+                .classList.add("show");
+            document
+                .getElementById("myChartLineTahunan")
+                .classList.remove("show");
+            lineValue = "bulanan";
+            url =
+                "/api/chart/lineChartTagihan/" +
+                valueBulananBulan +
+                "/" +
+                valueBulananTahun;
+            setChartLineBulananBulan();
+        }
+    }
+
+    function setChartLineBulananBulan() {
+        valueBulananBulan = document.getElementById(
+            "inputLineBulananBulan"
+        ).value;
+        url =
+            "/api/chart/lineChartTagihan/" +
+            valueBulananBulan +
+            "/" +
+            valueBulananTahun;
+        if (myChartLineBulanan != undefined) {
+            destroyChart();
+        }
+        callApi();
+    }
+    function setChartLineBulananTahun() {
+        valueBulananTahun = document.getElementById(
+            "inputLineBulananTahun"
+        ).value;
+        url =
+            "/api/chart/lineChartTagihan/" +
+            valueBulananBulan +
+            "/" +
+            valueBulananTahun;
+        if (myChartLineBulanan != undefined) {
+            destroyChart();
+        }
+        callApi();
+    }
+
+    function setChartLineTahunan() {
+        valueTahunan =
+            document.getElementById("inputLineTahunan").value;
+        url = "/api/chart/lineChartTagihan/" + valueTahunan;
+        if (myChartLineTahunan != undefined) {
+            destroyChart();
+        }
+        callApi();
+    }
+
+
+    function destroyChart() {
+        myChartLineBulanan.destroy();
+        myChartLineTahunan.destroy();
+    }
+    function initializeChart() {
+        callApi();
+        console.log("masuk initialize");
+    }
+
+    function callApi() {
+        $(document).ready(function () {
+            $.ajax({
+                url: url,
+                method: "GET",
+                dataType: "json",
+                success: function (d) {
+                    var tagihanData = [];
+
+                    var tempRange1 = [];
+                    d.map((element) => {
+                        tempRange1.push(element.range1);
+                    });
+
+                    var tempRange2 = [];
+                    d.map((element) => {
+                        tempRange2.push(element.range2);
+                    });
+
+                    var tempRange3 = [];
+                    d.map((element) => {
+                        tempRange3.push(element.range3);
+                    });
+
+                    var tempRange4 = [];
+                    d.map((element) => {
+                        tempRange4.push(element.range4);
+                    });
+
+                    var tempRange5 = [];
+                    d.map((element) => {
+                        tempRange5.push(element.range5);
+                    });
+
+                    tagihanData.push(
+                        {
+                            label: "[0-15]",
+                            backgroundColor: "rgb(138, 201, 38)",
+                            borderColor: "rgb(138, 201, 38)",
+                            data: tempRange1,
+                        },
+                        {
+                            label: "[16-30]",
+                            backgroundColor: "rgb(25, 130, 196)",
+                            borderColor: "rgb(25, 130, 196)",
+                            data: tempRange2,
+                        },
+                        {
+                            label: "[31-45]",
+                            backgroundColor: "rgb(255, 202, 58)",
+                            borderColor: "rgb(255, 202, 58)",
+                            data: tempRange3,
+                        },
+                        {
+                            label: "[46-60]",
+                            backgroundColor: "rgb(255, 89, 94)",
+                            borderColor: "rgb(255, 89, 94)",
+                            data: tempRange4,
+                        },
+                        {
+                            label: "[>61]",
+                            backgroundColor: "rgb(106, 76, 147)",
+                            borderColor: "rgb(106, 76, 147)",
+                            data: tempRange5,
+                        }
+                    );
+                    console.log(tagihanData);
+
+                    const configLineBulanan = {
+                        type: "line",
+
+                        data: {
+                            datasets: tagihanData,
+                            labels: d.map((element) => element.tanggal),
+                        },
+                        options: {},
+                    };
+                    const configLineTahunan = {
+                        type: "line",
+
+                        data: {
+                            datasets: tagihanData,
+                            labels: [
+                                "Januari",
+                                "Februari",
+                                "Maret",
+                                "April",
+                                "Mei",
+                                "Juni",
+                                "Juli",
+                                "Agustus",
+                                "September",
+                                "Oktober",
+                                "November",
+                                "Desember",
+                            ],
+                        },
+                        options: {},
+                    };
+
+
+                    myChartLineTahunan = new Chart(
+                        document.getElementById("myChartLineTahunan"),
+                        configLineTahunan
+                    );
+                    myChartLineBulanan = new Chart(
+                        document.getElementById("myChartLineBulanan"),
+                        configLineBulanan
+                    );
+                },
+            });
+        });
+    }
+</script>
+<footer th:replace="fragments/fragment :: footer(page = 'Beranda')"></footer>
+</body>
+</html>

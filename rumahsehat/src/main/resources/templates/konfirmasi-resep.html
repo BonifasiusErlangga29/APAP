@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Konfirmasi Resep - RumahSehat</title>
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+</head>
+<body>
+<nav th:replace="fragments/fragment :: navbar(page = 'Beranda')"></nav>
+
+<div class="container">
+    <div class="card m-4 p-4">
+        <div class="card-body">
+            <div class="justify-content-center">
+                <h2>Konfirmasi Resep</h2>
+                <br>
+                <form th:action="@{/resep/konfirmasi-resep/} + ${resep.id}" th:object="${resep.id}" method="POST">
+
+                    <br>
+                    <h3 th:text="'Apakah Anda ingin konfirmasi resep dengan ID ' + ${resep.id} + '?'"></h3>
+
+                    <br>
+
+                    <br>
+                    <a class="btn btn-link" href="/">Home</a>
+                    <a class = "btn btn-primary" th:href = "@{/resep/view?id=} + ${resep.id}">Kembali</a>
+                    <button type="submit" class="btn btn-primary">Konfirmasi Resep</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<footer th:replace="fragments/fragment :: footer(page = 'Konfirmasi Resep')"></footer>
+
+</body>
+</html>

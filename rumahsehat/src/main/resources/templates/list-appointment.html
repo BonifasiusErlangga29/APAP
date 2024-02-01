@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar Appointment - RumahSehat</title>
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+</head>
+<body>
+<nav th:replace="fragments/fragment :: navbar(page = 'Appointment')"></nav>
+
+    <br>
+    <br><br>
+    <div class="d-flex justify-content-center">
+        <h2 class="font-weight-bold" style="font-family: 'Poppins';font-size: 22px;">Daftar Appointment</h2>
+    </div>
+    <div class="d-flex justify-content-center">
+        <div th:if="*{listAppointment.size() != 0}">
+            <table class="table" style="margin-top: 10px">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col" class="text-center">No</th>
+                    <th class="text-center" th:unless="${isDokter}" scope="col">Nama Dokter</th>
+                    <th scope="col" class="text-center">Nama Pasien</th>
+                    <th scope="col" class="text-center">Waktu Awal</th>
+                    <th scope="col" class="text-center">Status Appointment</th>
+                    <th scope="col" class="text-center">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="appointment,iter : ${listAppointment}">
+                        <td th:text="${iter.index + 1}"></td>
+                        <td th:unless="${isDokter}" th:text="${appointment.dokter.nama}"></td>
+                        <td th:text="${appointment.pasien.nama}"></td>
+                        <td th:text="${#temporals.format(appointment.waktuAwal, 'dd-MM-yyyy HH:mm')}"></td>
+                        <td th:if="${appointment.isDone}">Sudah Selesai</td>
+                        <td th:unless="${appointment.isDone}">Belum Selesai</td>
+                        <td>
+                            <a class="btn btn-primary" th:href="@{/appointment/detail(kode=${appointment.kode})}">Detail Appointment</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:unless="*{listAppointment.size() != 0}">
+            <br>
+            <h5 style="margin-bottom: 500px" th:text="'Belum ada appointment yang terdaftar'"></h5>
+        </div>
+    </div>
+    <br>
+    <br><br>
+    <br>
+
+<footer th:replace="fragments/fragment :: footer(page = 'Daftar Appointment')"></footer>
+
+</body>
+</html>

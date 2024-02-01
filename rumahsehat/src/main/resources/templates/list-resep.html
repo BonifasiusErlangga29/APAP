@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar Resep - RumahSehat</title>
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+</head>
+<body>
+    <nav th:replace="fragments/fragment :: navbar(page = 'Resep')"></nav>
+    <br>
+    <br>
+    <div class="d-flex justify-content-center font-weight-bold">
+        <h2>Daftar Resep</h2>
+    </div>
+    <br>
+    <div class="d-flex justify-content-center">
+        <a class="px-4 m-1 btn text-info border border-info" href="/">Beranda</a>
+        <a sec:authorize="hasAuthority('Dokter')" class="bg-info m-1 btn text-white" href="/resep/add">+ Tambah Resep</a>
+    </div>
+
+
+    <br>
+    <div class="d-flex justify-content-center">
+        <div th:if="*{listResep.size() != 0}">
+            <table class = "table table-striped table-hover">
+                <thead class="bg-warning">
+                    <tr>
+                        <th class="text-center">No</th>
+                        <th class="text-center">ID</th>
+                        <th class="text-center">Created At</th>
+                        <th class="text-center">Is Done</th>
+                        <th class="text-center">Confirmer UUID</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+    
+                <tbody>
+                    <tr th:each = "resep, iterationStatus : ${listResep}">
+                        <td th:text = "${iterationStatus.count}"></td>
+                        <td th:text = "${resep.id}"></td>
+                        <td th:text="${#temporals.format(resep.createdAt, 'dd-MM-yyyy HH:mm:ss')}"></td>
+                        <td th:text = "${resep.isDone}"></td>
+                        <td th:if="*{resep.apoteker != null}" th:text = "${resep.apoteker.nama}"></td>
+                        <td th:if="*{resep.apoteker == null}" th:text = "'-'"></td>
+                        <td><a class = "bg-info btn btn-sm text-white" th:href = "@{/resep/view?id=} + ${resep.id}">Detail</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+            <p></p>
+            <br>
+        </div>
+        <div th:unless="*{listResep.size() != 0}">
+            <h5 th:text="'Belum ada resep yang terdaftar'"></h5>
+            <br>
+            <br><br>
+            <br><br>
+            <br><br>
+            <br><br>
+            <br><br>
+            <br><br>
+            <br><br>
+            <br><br>
+            <br><br>
+            <br><br>
+        </div>
+    </div>
+
+    
+    <footer th:replace="fragments/fragment :: footer(page = 'Daftar Resep')"></footer>
+
+</body>
+</html>

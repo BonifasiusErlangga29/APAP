@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail Resep - RumahSehat</title>
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+</head>
+<body>
+<nav th:replace="fragments/fragment :: navbar(page = 'Resep')"></nav>
+<br>
+<br>
+<div class="d-flex justify-content-center font-weight-bold">
+    <h2>Detail Resep</h2>
+</div>
+<br>
+<div class="d-flex justify-content-center">
+    <a class="px-4 m-1 btn text-info border border-info" href="/">Beranda</a>
+    <a sec:authorize="hasAnyAuthority('Admin', 'Apoteker')" class="bg-info m-1 btn text-white" href="/resep/viewAll">Kembali ke Daftar Resep</a>
+    <a sec:authorize="hasAnyAuthority('Admin', 'Dokter')" class="bg-info m-1 btn text-white" th:href="@{/appointment/detail(kode=${resep.appointment.kode})}">Kembali ke Appointment</a>
+</div>
+
+<div class="d-flex justify-content-center">
+</div>
+
+<div class="d-flex justify-content-center">
+    <div class="justify-content-center">
+        <br>
+        <h6 th:text="'ID Resep: ' + ${resep.id}"></h6>
+        <h6 th:text="'Nama Dokter: ' + ${dokter.nama}"></h6>
+        <h6 th:text="'Nama Pasien: ' + ${pasien.nama}"></h6>
+        <h6 th:text="'Status Resep: ' + ${statusresep}"></h6>
+        <h6 th:if="${resep.isDone == true}" th:text="'Apoteker (yang mengonfirmasi): ' + ${apoteker}"></h6>
+        <br>
+
+        <div th:if="${resep.isDone == false}">
+            <a th:if="${isApoteker}" class="bg-info m-1 btn text-white" th:href="@{/resep/konfirmasi-resep/} + ${resep.id}">Konfirmasi Resep</a>
+            <br>
+        </div>
+
+
+        <br>
+        <h4>Daftar Obat:</h4>
+        <div th:if="*{listObat.size() != 0}">
+            <table class = "table table-striped table-hover">
+                <thead class="bg-warning">
+                <tr>
+                    <th class="text-center">No</th>
+                    <th class="text-center">Obat</th>
+                    <th class="text-center">Jumlah</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each = "obat, iterationStatus : ${listObat}">
+                    <td th:text = "${iterationStatus.count}"></td>
+                    <td th:text = "${obat.nama}"></td>
+                    <td th:text = "${listKuantitas[__${iterationStatus.index}__]}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <br>
+            <p></p>
+            <br>
+        </div>
+        <div th:unless="*{listObat.size() != 0}">
+            <h6 th:text="'Belum ada obat yang terdaftar'"></h6>
+            <br>
+            <br><br>
+            <br><br>
+        </div>
+        <p></p>
+        <br>
+    </div>
+</div>
+
+<footer th:replace="fragments/fragment :: footer(page = 'Detail Resep')"></footer>
+
+</body>
+</html>

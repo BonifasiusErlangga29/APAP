@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Daftar Dokter - RumahSehat</title>
+  <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+  <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+</head>
+<body>
+<nav th:replace="fragments/fragment :: navbar(page = 'User')"></nav>
+
+<div class="container">
+  <div class="card m-4 p-4">
+    <div class="card-body">
+      <h2>List Dokter</h2>
+      <br>
+      <div class="d-flex justify-content-between">
+        <div>
+          <a class="btn btn-outline-primary" href="/">Beranda</a>
+          <a class="btn btn-outline-primary" href="/user">Kembali ke Manajemen User</a>
+          <a class="btn btn-primary" href="/user/viewallapoteker">Daftar Apoteker</a>
+          <a class="btn btn-primary" href="/user/viewallpasien">Daftar Pasien</a>
+        </div>
+        <div>
+          <a class="btn btn-primary" href="/user/add-dokter">+ Tambah Dokter Baru</a>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="justify-content-center">
+        <table class = "table table-striped table-hover">
+          <thead class="bg-warning">
+          <tr text-align= "center">
+            <th>No</th>
+            <th>Nama</th>
+            <th>Role</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Tarif</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="dokter,iterationStatus : ${listDokter}">
+            <td th:text=${iterationStatus.count}></td>
+            <td th:text="${dokter.nama}">
+            </td>
+            <td th:text="${dokter.role}">
+            </td>
+            <td th:text="${dokter.username}">
+            </td>
+            <td th:text="${dokter.email}">
+            </td>
+            <td th:text="${dokter.tarif}">
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<br>
+<br><br>
+<footer th:replace="fragments/fragment :: footer(page = 'Daftar Dokter')"></footer>
+
+</body>
+</html>

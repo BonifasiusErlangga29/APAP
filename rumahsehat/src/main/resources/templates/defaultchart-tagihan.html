@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>RUMAH SEHAT</title>
+  <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+  <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+  <script src="https://cdn.jsdelivr.net/npm/moment@^2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@^1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+
+</head>
+<body>
+<nav th:replace="fragments/fragment :: navbar(page = 'Chart Tagihan')"></nav>
+<br>
+<br>
+<div class="d-flex justify-content-center font-weight-bold">
+  <h2>Chart Tagihan</h2>
+</div>
+<br>
+
+<center>
+  <div class="chart-container" style="position: relative; height:100vh; width:80vw">
+    <canvas id="myChart"></canvas>
+  </div>
+</center>
+
+<br><br>
+<footer th:replace="fragments/fragment :: footer(page = 'Beranda')"></footer>
+
+<script>
+  const ctx = document.getElementById('myChart');
+
+  $(document).ready(function () {
+    $.ajax({
+      url: '/api/v1/tagihan/list',
+      method: 'GET',
+      dataType: 'json',
+      success: function (tagihanList) {
+        const data = [];
+        const firstDayOfMonth = moment().startOf('month');
+        const lastDayOfMonth = moment().endOf('month');
+        for (let i = 0; i < tagihanList.length; i++) {
+          const result = tagihanList[i];
+          const tanggalTerbuat = moment(new Date(tagihanList[i].tanggal_terbuat))
+          if (tanggalTerbuat.isAfter(firstDayOfMonth) && tanggalTerbuat.isBefore(lastDayOfMonth)) {
+            data.push(result);
+          }
+        }
+        //https://stackoverflow.com/questions/20630676/how-to-group-objects-with-timestamps-properties-by-day-week-month
+        const groupedResults = _.groupBy(data, function (tagihan) {
+          const result = moment(new Date(tagihan.tanggal_terbuat));
+          return result.startOf('day').toDate();
+        });
+        console.log(groupedResults);
+        const chartData = [];
+        for (let x in groupedResults) {
+          chartData.push({
+            "x": x,
+            "y": groupedResults[x]
+                    .reduce((acc, currentValue) => acc + currentValue.jumlah_tagihan, 0)
+          })
+        }
+        console.log(chartData);
+        let chart = new Chart(ctx, {
+          type:'line',
+          data: {
+            datasets: [{
+              label: 'Jumlah Tagihan',
+              fill: false,
+              backgroundColor: '#52a9ff',
+              borderColor: '#52a9ff',
+              data: chartData
+            }],
+          },
+          options: {
+            scales: {
+              x: {
+                type: 'time',
+                time: {
+                  unit: 'day',
+                  unitStepSize: 1,
+                  distributions: 'series',
+                  displayFormats: {
+                    'day': 'DD/MM/YYYY'
+                  }
+                }
+              }
+            }
+          }
+        })
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

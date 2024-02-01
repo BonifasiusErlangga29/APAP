@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>RUMAH SEHAT</title>
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+</head>
+<body>
+<nav th:replace="fragments/fragment :: navbar(page = 'Beranda')"></nav>
+
+<div class="container">
+    <div class="card m-4 p-4">
+        <div class="card-body">
+            <div class="justify-content-center">
+                <h2>Form Barchart Tagihan</h2>
+                <br>
+                <form th:action="@{/chart/barChartTagihan}" th:object="${barChart}" method="post">
+
+                    Jenis Chart: <br>
+                    <select name="jenisChart" th:field="${barChart.barChartKuantitas}"
+                            class="form-control">
+                        <option value="1">Kuantitas Tagihan</option>
+                        <option value="0">Total Tagihan</option>
+                    </select>
+                    <br><br>
+
+                    <h3>Daftar Range Umur Pasien</h3>
+                    <h5>Pilih range umur pasien yang ingin ditampilkan</h5>
+                    <table class="table">
+                        <thead>
+                        <div th:text="${message}"> </div>
+                        <th>Range Umur Pasien</th>
+                        <th>
+                            <button class="btn btn-primary" type="submit" name="addRowChart">Tambah</button>
+                        </th>
+                        </thead>
+                        <tbody>
+                        <tr th:each="chart, iterationStatus : *{listBarChartTagihan}">
+                            <td>
+                                <select required name="id"
+                                        th:field="*{listBarChartTagihan[__${iterationStatus.index}__].tagihanSelectedId}"
+                                        class="form-control">
+
+                                    <option th:each="tagihan, iterationStatus2 : ${listTagihan}"
+                                            th:value="${tagihan.id}" th:text="${tagihan.nama}">
+                                    </option>
+                                </select>
+                            </td>
+                            <td>
+                                <button th:value="${iterationStatus.index}" class="btn btn-danger" type="submit"
+                                        name="deleteRowChart">Hapus</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+
+                    <button class="btn btn-primary" type="submit" name="save">Tampilkan Barchart</button>
+                    <a class="btn btn-primary" href="/">Home</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<footer th:replace="fragments/fragment :: footer(page = 'Beranda')"></footer>
+
+</body>
+</html>

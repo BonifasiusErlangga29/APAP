@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Tambah Dokter - RumahSehat</title>
+  <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+  <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+</head>
+<body>
+<nav th:replace="fragments/fragment :: navbar(page = 'User')"></nav>
+
+<div class="container">
+  <div class="card m-4 p-4">
+    <div class="card-body">
+      <div class="justify-content-center">
+        <h2>Tambah Dokter Baru</h2>
+        <br>
+        <form th:action="@{/user/add-dokter}" th:object="${dokterDto}" method="POST">
+
+          <br>
+          <label>Nama</label>
+          <input type="text" name="nama" class="form-control"/>
+
+          <br>
+          <label>Username</label>
+          <input type="text" name="username" class="form-control"/>
+          <div th:if="${duplicate_username}">
+            <p style="color: red; font-size: 12px;" th:text="${duplicate_username}"></p>
+          </div>
+
+          <br>
+          <label>E-Mail</label>
+          <input type="text" name="email" class="form-control"/>
+          <div th:if="${duplicate_email}">
+            <p style="color: red; font-size: 12px;" th:text="${duplicate_email}"></p>
+          </div>
+
+          <br>
+          <label>Password</label>
+          <input type="password" name="password" class="form-control"/>
+
+          <br>
+          <label>Tarif</label>
+          <input type="number" name="tarif" class="form-control"/>
+
+          <br>
+          <a class="btn btn-link" href="/">Home</a>
+          <a th:href="@{/user/viewalldokter}" class="mx-2 btn btn-outline-primary">Kembali ke Daftar Dokter</a>
+          <button type="submit" class="btn btn-primary">Submit</button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br><br>
+<br><br>
+<footer th:replace="fragments/fragment :: footer(page = 'Tambah Dokter')"></footer>
+
+</body>
+</html>

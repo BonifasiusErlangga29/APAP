@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+    <meta charset="UTF-8">
+    <title>RUMAH SEHAT</title>
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+</head>
+<body >
+    <div id="bg2"></div>
+
+
+    <nav th:replace="fragments/fragment :: navbar(page = 'Beranda')"></nav>
+
+    <br><br>
+    <br><br>
+    <br>
+    <div class="d-flex justify-content-between" style="font-family: 'Poppins';">
+        <div class="card d-flex" style="width: 40%;background-color: transparent;border: 0ch;">
+
+        </div>
+     
+        <div class="card d-flex justify-content-center" style="background-color: transparent; border-color: transparent;">
+            <br>
+            <div>
+                <h2 th:text="'Selamat Datang di RumahSehat,'" style="text-align: center;color: #245c85;font-size: 20px;"></h2>
+                <h2 class="font-weight-bold" th:text="${#httpServletRequest.remoteUser} + '!'" style="text-align: center;color: #0d2e47;font-size: 24px;"></h2>
+                <br>
+                <div class="d-flex justify-content-center">
+                    <a sec:authorize="hasAuthority('Admin')" th:href="@{/user}" class="mx-2 btn btn-primary">Manajemen User</a>
+                    <a sec:authorize="hasAnyAuthority('Admin', 'Dokter')" th:href="@{/appointment/list}" class="mx-2 btn btn-primary">Daftar Appointment</a>
+                </div>
+                <br>
+                <div class="d-flex justify-content-center">
+                    <a sec:authorize="hasAnyAuthority('Apoteker', 'Admin')" th:href="@{/resep/viewAll}" class="mx-2 btn btn-primary">Daftar Resep</a>
+                    <a sec:authorize="hasAnyAuthority('Apoteker', 'Admin')" th:href="@{/obat/viewAll}" class="mx-2 btn btn-primary">Daftar Obat</a>
+                    <a sec:authorize="hasAuthority('Apoteker')" th:href="@{/obat/ubah-stok}" class="mx-2 btn btn-primary">Lihat & Update Stok Obat</a>    
+                </div>
+                <br>
+                <div class="d-flex justify-content-center">
+                    <a sec:authorize="hasAuthority('Admin')" th:href="@{/chart/defaultChartTagihan}" class="mx-2 btn btn-primary">Chart Tagihan</a>
+                    <a sec:authorize="hasAuthority('Admin')" th:href="@{/chart/lineChartTagihan}" class="mx-2 btn btn-primary">Line Chart Tagihan</a>
+                    <a sec:authorize="hasAuthority('Admin')" th:href="@{/chart/barChartTagihan}" class="mx-2 btn btn-primary">Bar Chart Tagihan</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card d-flex" style="width: 1%;background-color: transparent;border: 0ch;">
+
+        </div>
+    </div>
+    <br><br><br><br><br><br>
+    
+    <div class="card" style="background-color: transparent;border: 0ch;">
+        <footer th:replace="fragments/fragment :: footer(page = 'Beranda')"></footer>
+    </div>
+
+</body>
+</html>

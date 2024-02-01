@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ubah Status Appointment - RumahSehat</title>
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+</head>
+<body>
+<nav th:replace="fragments/fragment :: navbar(page = 'Appointment')"></nav>
+
+<div class="container">
+    <div class="card m-4 p-4">
+        <div class="card-body">
+            <div class="justify-content-center">
+                <h2 style="float: left; font-weight: bold; font-family: 'Verdana'; color:#17a2b8; font-size: 20px;" th:text="'Mohon maaf, Anda tidak dapat menyelesaikan appointment karena appointment memiliki resep yang belum selesai!'"></h2>
+                <br>
+                <br>
+                <br>
+                <a class="px-4 m-1 btn text-info border border-info btn-sm" href="/">Beranda</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+<br>
+<footer th:replace="fragments/fragment :: footer(page = 'Ubah Status Appointment')"></footer>
+
+</body>
+</html>

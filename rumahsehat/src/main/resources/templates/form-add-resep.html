@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Tambah Resep - RumahSehat</title>
+  <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+  <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+  <style>
+    .select2-selection__rendered {
+      line-height: 36px !important;
+    }
+
+    .select2-container .select2-selection--single {
+      height: 40px !important;
+      border-color: rgb(210, 210, 210);
+    }
+
+    .select2-selection__arrow {
+      height: 40px !important;
+    }
+  </style>
+  <script>
+    $(document).ready(()=>{
+
+        $("#select-obat").select2();
+
+    })
+  </script>
+</head>
+
+<body>
+<nav th:replace="fragments/fragment :: navbar(page = 'Resep')"></nav>
+
+<div class="container">
+  <div class="card m-4 p-4">
+    <div class="card-body">
+      <div class="justify-content-center">
+        <h2>Membuat Resep</h2>
+        <br>
+
+        <form th:action="@{/resep/add(kode=${kode})}" th:object="${resep}" method="POST">
+
+          <table class="table">
+            <thead>
+              <th>Obat</th>
+              <th>Kuantitas</th>
+              <th></th>
+            </thead>
+            <tbody>
+              <tr th:each="obat, iterationStatus : *{jumlah}">                
+                 <td>
+                    <select name="obat" id="select-obat" class="form-control col" th:field="*{jumlah[__${iterationStatus.index}__].obat}">
+                      <option th:each="obat : ${listObat}" th:value="${obat.idObat}" th:text="${obat.nama}"></option>
+                    </select>
+                  </td>
+                  <td>
+                    <input name="kuantitas" class="form-control" th:field="*{jumlah[__${iterationStatus.index}__].kuantitas}">                
+                  </td>
+                 <td>
+                    <button th:value="${iterationStatus.index}" class="btn btn-danger" type="submit"
+                          name="deleteRow">Hapus</button>
+                  </td>
+              </tr>
+          </tbody>
+          </table>
+          <button style="background-color:rgb(255, 136, 0)" class="btn text-white" type="submit" name="addRow">Tambah Obat</button>
+          <div class="d-flex justify-content-center">
+            <a class="m-3 btn btn-outline-primary" th:href="@{/appointment/detail(kode=${kode})}">Kembali</a>
+            <button type="submit" class="px-5 m-3 bg-info btn text-white">Submit</button>
+
+        </form>
+
+      </div>
+      </div>
+      <br />
+      <br />
+    </div>
+  </div>
+</div>
+
+
+<footer th:replace="fragments/fragment :: footer(page = 'Tambah Resep')"></footer>
+</body>
+
+</html>

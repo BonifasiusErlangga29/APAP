@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>RUMAH SEHAT</title>
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+</head>
+<body>
+<nav th:replace="fragments/fragment :: navbar(page = 'Beranda')"></nav>
+
+<div class="container">
+    <div class="card m-4 p-4">
+        <div class="card-body">
+            <div class="justify-content-center">
+                <div>
+                    <canvas id="myChart"></canvas>
+                </div>
+
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+                <script th:inline="javascript">
+                    const ctx = document.getElementById('myChart').getContext('2d');
+                    var htmldata = [[${data}]];
+                    var jenisBarChart = [[${jenisBarChart}]]
+
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: Object.keys(htmldata),
+                            datasets: [{
+                                label: jenisBarChart,
+                                data: Object.keys(htmldata).map(function(key) {
+                                        return htmldata[key];
+                                    }
+                                ),
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+
+
+                </script>
+                <a class="btn btn-primary" href="/chart/barChartTagihan">Kembali</a>
+                <a class="btn btn-primary" href="/">Beranda</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<br><br>
+<br>
+<footer th:replace="fragments/fragment :: footer(page = 'Beranda')"></footer>
+
+</body>
+</html>
